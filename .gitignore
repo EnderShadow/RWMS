@@ -6,3 +6,5 @@ testdata/
 rwms_unknown_mods_*
 rwms_database.json
 
+github.token
+github.username

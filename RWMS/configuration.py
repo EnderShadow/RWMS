@@ -10,9 +10,9 @@ if sys.platform == "win32":
     import winreg
 
 
-def configuration_file():
+def get_file_path(filename):
     """
-    returns the configuration file as a string, empty if not detected.
+    returns the path of the given filename relative to the location of the executable
     :return: str
     """
 
@@ -24,7 +24,16 @@ def configuration_file():
     elif __file__:
         mypath = os.path.dirname(sys.argv[0])
 
-    return os.path.join(mypath, "rwms_config.ini")
+    return os.path.join(mypath, filename)
+
+
+def configuration_file():
+    """
+    returns the configuration file as a string, empty if not detected.
+    :return: str
+    """
+
+    return get_file_path("rwms_config.ini")
 
 
 def load_value(section, entry, isBool=False):
@@ -53,6 +62,19 @@ def load_value(section, entry, isBool=False):
             value = cfg.getboolean(section, entry)
         else:
             value = cfg.get(section, entry, raw=True)
+            if value == '' and section == 'github':
+                if entry == 'github_password':
+                    # check for a token file if no password was defined
+                    tokenfile = get_file_path("github.token")
+                    if os.path.isfile(tokenfile):
+                        with open(tokenfile) as f:
+                            value = f.read().strip()
+                elif entry == 'github_username':
+                    # check for a username file if no username was defined
+                    username_file = get_file_path("github.username")
+                    if os.path.isfile(username_file):
+                        with open(username_file) as f:
+                            value = f.read().strip()
     except:
         print("Error parsing entry '{}', section '{}' from configuration file '{}'".format(entry, section, configfile))
         input("Press ENTER to end program.")
