@@ -543,14 +543,14 @@ else:
     if args.dry_run:
         print_dry_run(modsconfigfile, doc, mod_data_full)
         write_modsconfig = False
-
-    # ask for confirmation to write the ModsConfig.xml anyway
-    while True and not args.dry_run:
-        data = input("Do you REALLY want to write ModsConfig.xml (y/n): ")
-        if data.lower() in ('y', 'n'):
-            break
-    if data.lower() == 'y':
-        write_modsconfig = True
+    else:
+        # ask for confirmation to write the ModsConfig.xml anyway
+        while True:
+            data = input("Do you REALLY want to write ModsConfig.xml (y/n): ")
+            if data.lower() in ('y', 'n'):
+                break
+        if data.lower() == 'y':
+            write_modsconfig = True
 
 if write_modsconfig:
     # do backup
